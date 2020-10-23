@@ -1,16 +1,14 @@
 // useRef and useEffect: DOM interaction
-// http://localhost:3000/isolated/exercise/05-classes.js
+// tiltNode
 
 import React from 'react'
 import VanillaTilt from 'vanilla-tilt'
 
-// If you'd rather practice refactoring a class component to a function
-// component with hooks, then go ahead and do this exercise.
+const Tilt = (props) => {
+  const tiltRef = React.createRef()
 
-class Tilt extends React.Component {
-  tiltRef = React.createRef()
-  componentDidMount() {
-    const tiltNode = this.tiltRef.current
+  React.useEffect(() => {
+    const tiltNode = tiltRef.current
     const vanillaTiltOptions = {
       max: 25,
       speed: 400,
@@ -18,18 +16,17 @@ class Tilt extends React.Component {
       'max-glare': 0.5,
     }
     VanillaTilt.init(tiltNode, vanillaTiltOptions)
-  }
-  componentWillUnmount() {
-    this.tiltRef.current.vanillaTilt.destroy()
-  }
-  render() {
-    return (
-      <div ref={this.tiltRef} className="tilt-root">
-        <div className="tilt-child">{this.props.children}</div>
-      </div>
-    )
-  }
+
+    return () => tiltNode.vanillaTilt.destroy()
+  }, [])
+
+  return (
+    <div ref={tiltRef} className="tilt-root">
+      <div className="tilt-child">{props.children}</div>
+    </div>
+  )
 }
+
 function App() {
   return (
     <Tilt>
